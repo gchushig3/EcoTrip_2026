@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema de ventana (solo el instante previo a que Compose dibuje). El color real lo da MaterialTheme. -->
+    <style name="Theme.EcoTrip" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

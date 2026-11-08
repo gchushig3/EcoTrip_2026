@@ -1,0 +1,5 @@
+# Compilación y caché de Gradle / Kotlin
+build/
+.gradle/
+.kotlin/
+
