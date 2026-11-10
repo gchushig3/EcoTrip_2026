@@ -1,6 +1,7 @@
 package com.ecotrip.app.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -145,6 +146,12 @@ class EcoTripViewModel(
             esViajeGrupal = savedStateHandle[CLAVE_GRUPAL] ?: false,
             ticketCode = ticketCode          // ← lo recibe y lo entrega en la ruta
         )
+    }
+
+    /** Gancho de limpieza: el framework lo invoca justo antes de destruir definitivamente el ViewModel. */
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("EcoTrip_Lifecycle", "Memoria del viaje liberada.")
     }
 
     private companion object {

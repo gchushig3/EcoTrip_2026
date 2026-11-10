@@ -3,6 +3,7 @@ package com.ecotrip.app.navigation
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,17 +24,17 @@ import com.ecotrip.app.ui.screens.ResumenScreen
 @Composable
 fun EcoTripNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    viewModel: EcoTripViewModel = viewModel()
+    navController: NavHostController = rememberNavController()
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     NavHost(
         navController = navController,
         startDestination = FormularioRoute,
         modifier = modifier
     ) {
-        composable<FormularioRoute> {
+        composable<FormularioRoute> { formularioEntry ->
+            // ViewModel con alcance de esta entrada del Back Stack: se destruye (onCleared) al salir de ella.
+            val viewModel: EcoTripViewModel = viewModel(viewModelStoreOwner = formularioEntry)
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
             FormularioScreen(
                 state = state,
                 onNombreChange = viewModel::onNombreChange,
@@ -53,6 +54,12 @@ fun EcoTripNavHost(
         composable<ResumenRoute> { backStackEntry ->
             // Recupera los argumentos ya tipados (String, Int, Boolean), sin parsear strings.
             val ruta = backStackEntry.toRoute<ResumenRoute>()
+            // Reutiliza el mismo ViewModel de la entrada del formulario (se resuelve una sola vez).
+            val formularioEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<FormularioRoute>()
+            }
+            val viewModel: EcoTripViewModel = viewModel(viewModelStoreOwner = formularioEntry)
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
             val salir = { navController.volverAlFormulario() }
 
             // El botón "atrás" del sistema se comporta igual que el botón de la barra superior.
