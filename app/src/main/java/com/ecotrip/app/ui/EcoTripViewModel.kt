@@ -31,7 +31,11 @@ data class FormularioUiState(
     // Errores de validación (null = campo correcto)
     val errorDestino: String? = null,
     val errorDuracion: String? = null
-)
+) {
+    // Caso 3: regla derivada del estado. Se recalcula en cada pulsación de tecla (UDF).
+    val puedePlanificar: Boolean
+        get() = nombreViajero.length >= 4 && destino.isNotBlank()
+}
 
 /** Errores visibles para un campo concreto; viven aparte porque son efímeros. */
 private data class ErroresFormulario(
